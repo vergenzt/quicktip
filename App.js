@@ -12,7 +12,13 @@ const styles = StyleSheet.create({
 export class MainScreen extends React.Component {
   static navigationOptions = ({navigation: {navigate}}) => ({
     title: 'QuickTip',
-    headerRight: <Button title='⋮' onPress={() => navigate('Settings')}/>
+    headerRight: (
+      <Text
+        children={'⋮'}
+        style={{fontWeight: 'bold', width: 25}}
+        onPress={() => navigate('Settings')}
+      />
+    )
   });
 
   render() {
