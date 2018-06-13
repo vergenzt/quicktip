@@ -2,9 +2,11 @@ import React from 'react';
 import { Text, TextInput, View } from 'react-native';
 import currency from 'currency.js';
 
+import mask from '../lib/currency-mask';
+
 import styles from '../styles';
 import TipsTable from '../components/tips-table';
-import { calculateTips } from '../lib/tip-lister';
+import { getFormattedTips } from '../lib/tip-lister';
 
 export default class MainScreen extends React.Component {
   static navigationOptions = ({navigation: {navigate}}) => ({
@@ -19,13 +21,27 @@ export default class MainScreen extends React.Component {
   });
 
   state = {
-    subtotal: 47.89
+    subtotal: null,
+    subtotalText: '$',
   };
 
-  handleBillAmountTextChanged = (subtotalText) => {
+  handleSubtotalTextChanged = (subtotalText) => {
+    const { maskedValue, value } = mask(subtotalText,
+      precision = 2,
+      decimalSeparator = '.',
+      thousandSeparator = ',',
+      allowNegative = false,
+      prefix = '$',
+      suffix = ''
+    );
     this.setState({
-      subtotal: currency(subtotalText).value
+      subtotal: value,
+      subtotalText: maskedValue
     });
+  };
+
+  handleSubtotalSubmit = () => {
+    console.log('Showing tips table');
   };
 
   render() {
@@ -39,13 +55,14 @@ export default class MainScreen extends React.Component {
           <TextInput
             keyboardType="numeric"
             autoFocus={true}
-            selectTextOnFocus={true}
-            value={currency(this.state.subtotal).format()}
-            onChangeText={this.handleBillAmountTextChanged}
+            blurOnSubmit={true}
+            defaultValue={this.state.subtotalText}
+            onChangeText={this.handleSubtotalTextChanged}
+            onSubmitEditing={this.handleSubtotalSubmit}
           />
         </View>
 
-        <TipsTable tips={calculateTips(this.state.subtotal)}/>
+        <TipsTable tips={getFormattedTips(this.state.subtotal)}/>
       </View>
     );
   }
