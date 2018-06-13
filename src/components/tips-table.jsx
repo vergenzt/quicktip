@@ -36,6 +36,7 @@ export default class TipsTable extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        { this.renderHeaderRow() }
         <Table borderStyle={{borderColor: 'transparent'}}>
           { this.props.tips.map(this.renderTipRow) }
         </Table>
